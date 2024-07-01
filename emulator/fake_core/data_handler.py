@@ -6,7 +6,7 @@ Onboard Data Handling (OBDH) Module
 This module provides the main interface for the onboard data handling system consisting of:
 - Persistent storage management and single point of access for the onboard mass storage system (SD Card)
 - Logging interface for flight software tasks
-- Automated file services for the flight software, including telemetry (TM) and telecommand (TC) file generation for transmission
+- Automated file services, including telemetry (TM) and telecommand (TC) file generation for transmission
 - Data processing and formatting for the flight software
 
 Author: Ibrahima Sory Sow
@@ -115,7 +115,8 @@ class DataProcess:
 
         # TODO Check formating e.g. 'iff', 'iif', 'fff', 'iii', etc. ~ done within compute_bytesize()
         self.data_format = "<" + data_format
-        # Need to specify endianness to disable padding (https://stackoverflow.com/questions/47750056/python-struct-unpack-length-error/47750278#47750278)
+        # Need to specify endianness to disable padding
+        # (https://stackoverflow.com/questions/47750056/python-struct-unpack-length-error/47750278#47750278)
         self.bytesize = self.compute_bytesize(self.data_format)
 
         self.last_data = {}
@@ -128,22 +129,16 @@ class DataProcess:
             self.create_folder()
 
             # To Be Resolved for each file process, TODO check if int, positive, etc
-            self.size_limit = (
-                line_limit * self.bytesize
-            )  # Default size limit is 1000 data lines
+            self.size_limit = line_limit * self.bytesize  # Default size limit is 1000 data lines
 
             self.current_path = self.create_new_path()
             self.delete_paths = []  # Paths that are flagged for deletion
-            self.excluded_paths = (
-                []
-            )  # Paths that are currently being transmitted
+            self.excluded_paths = []  # Paths that are currently being transmitted
 
             config_file_path = self.dir_path + _PROCESS_CONFIG_FILENAME
             if not path_exist(config_file_path) or new_config_file:
                 config_data = {
-                    "data_format": self.data_format[
-                        1:
-                    ],  # remove the < character
+                    "data_format": self.data_format[1:],  # remove the < character
                     "line_limit": line_limit,
                     "data_keys": data_keys,
                 }
@@ -333,9 +328,7 @@ class DataProcess:
         """
         files = os.listdir(self.dir_path)
         # TODO - implement the rest of the function
-        total_size = (
-            len(files) * self.size_limit + self.get_current_file_size()
-        )
+        total_size = len(files) * self.size_limit + self.get_current_file_size()
         return len(files), total_size
 
     def get_current_file_size(self) -> Optional[int]:
@@ -365,7 +358,8 @@ class DataProcess:
         Reads the content of the current file.
 
         Returns:
-            A list of tuples representing the content of the file. Each tuple contains the unpacked data from a line in the file.
+            A list of tuples representing the content of the file.
+            Each tuple contains the unpacked data from a line in the file.
 
         Raises:
             FileNotFoundError: If the file does not exist.
@@ -475,7 +469,8 @@ class DataHandler:
     Managing class for all data processes and the SD card.
 
 
-    Note: If the same SPI bus is shared with other peripherals, the SD card must be initialized before accessing any other peripheral on the bus.
+    Note: If the same SPI bus is shared with other peripherals, the SD card must be initialized before accessing
+    any other peripheral on the bus.
     Failure to do so can prevent the SD card from being recognized until it is powered off or re-inserted.
     """
 
@@ -502,9 +497,7 @@ class DataHandler:
         """
         directories = cls.list_directories()
         for dir_name in directories:
-            config_file = join_path(
-                cls.sd_path, dir_name, _PROCESS_CONFIG_FILENAME
-            )
+            config_file = join_path(cls.sd_path, dir_name, _PROCESS_CONFIG_FILENAME)
             if path_exist(config_file):
                 with open(config_file, "r") as f:
                     config_data = json.load(f)
@@ -560,7 +553,7 @@ class DataHandler:
                 data_format,
                 persistent=persistent,
                 line_limit=line_limit,
-                home_path=cls.sd_path
+                home_path=cls.sd_path,
             )
         else:
             raise ValueError("Line limit must be a positive integer.")
@@ -764,9 +757,7 @@ class DataHandler:
         """
         try:
             if tag_name in cls.data_process_registry:
-                return cls.data_process_registry[tag_name].request_TM_path(
-                    latest=latest
-                )
+                return cls.data_process_registry[tag_name].request_TM_path(latest=latest)
             else:
                 raise KeyError("Data  process not registered!")
         except KeyError as e:
@@ -783,9 +774,7 @@ class DataHandler:
         """
         try:
             if "img" in cls.data_process_registry:
-                return cls.data_process_registry["img"].request_TM_path(
-                    latest=latest
-                )
+                return cls.data_process_registry["img"].request_TM_path(latest=latest)
             else:
                 raise KeyError("Image process not registered!")
         except KeyError as e:
@@ -820,16 +809,10 @@ class DataHandler:
         try:
             for file_name in os.listdir(path):
                 file_path = path + "/" + file_name
-                if (
-                    os.stat(file_path)[0] & 0x8000
-                ):  # Check if file is a regular file
+                if os.stat(file_path)[0] & 0x8000:  # Check if file is a regular file
                     os.remove(file_path)
-                elif (
-                    os.stat(file_path)[0] & 0x4000
-                ):  # Check if file is a directory
-                    cls.delete_all_files(
-                        file_path
-                    )  # Recursively delete files in subdirectories
+                elif os.stat(file_path)[0] & 0x4000:  # Check if file is a directory
+                    cls.delete_all_files(file_path)  # Recursively delete files in subdirectories
                     os.rmdir(file_path)  # Delete the empty directory
             print("All files and directories deleted successfully!")
         except Exception as e:
@@ -839,9 +822,7 @@ class DataHandler:
     def get_current_file_size(cls, tag_name):
         try:
             if tag_name in cls.data_process_registry:
-                return cls.data_process_registry[
-                    tag_name
-                ].get_current_file_size()
+                return cls.data_process_registry[tag_name].get_current_file_size()
             else:
                 raise KeyError("File process not registered!")
         except KeyError as e:
@@ -908,7 +889,8 @@ class DataHandler:
 
 def path_exist(path: str) -> bool:
     """
-    Replacement for os.path.exists() function, which is not implemented in micropython. If the request for a directory, the function will return True if the directory exists, even if it is empty.
+    Replacement for os.path.exists() function, which is not implemented in micropython.
+    If the request for a directory, the function will return True if the directory exists, even if it is empty.
     """
     try_path = path
     if path[-1] == "/":
@@ -936,9 +918,7 @@ def join_path(*paths: str) -> str:
         return ""
 
     joined_path = "/".join(paths)
-    normalized_path = re.sub(
-        r"/+", "/", joined_path
-    )  # remove multiple slashes
+    normalized_path = re.sub(r"/+", "/", joined_path)  # remove multiple slashes
     # Remove leading slash if this was not an absolute path
     if not paths[0].startswith("/"):
         normalized_path = normalized_path.lstrip("/")

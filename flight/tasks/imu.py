@@ -33,9 +33,7 @@ class Task(TemplateTask):
         if SM.current_state == "NOMINAL":
 
             if not DH.data_process_exists("imu"):
-                DH.register_data_process(
-                    "imu", self.data_keys, "ffffffffff", True, line_limit=40
-                )
+                DH.register_data_process("imu", self.data_keys, "ffffffffff", True, line_limit=40)
 
             # print(f"[{self.ID}][{self.name}] Reading BMX160.")
 

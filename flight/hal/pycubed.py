@@ -116,13 +116,9 @@ class PyCubed:
         }
         # Define burn wires:
         self._relayA = digitalio.DigitalInOut(board.RELAY_A)
-        self._relayA.switch_to_output(
-            drive_mode=digitalio.DriveMode.OPEN_DRAIN
-        )
+        self._relayA.switch_to_output(drive_mode=digitalio.DriveMode.OPEN_DRAIN)
         self._resetReg = digitalio.DigitalInOut(board.VBUS_RST)
-        self._resetReg.switch_to_output(
-            drive_mode=digitalio.DriveMode.OPEN_DRAIN
-        )
+        self._resetReg.switch_to_output(drive_mode=digitalio.DriveMode.OPEN_DRAIN)
 
         # Define battery voltage
         self._vbatt = AnalogIn(board.BATTERY)
@@ -168,9 +164,7 @@ class PyCubed:
 
         # Initialize Neopixel
         try:
-            self.neopixel = neopixel.NeoPixel(
-                board.NEOPIXEL, 1, brightness=0.2, pixel_order=neopixel.GRB
-            )
+            self.neopixel = neopixel.NeoPixel(board.NEOPIXEL, 1, brightness=0.2, pixel_order=neopixel.GRB)
             self.neopixel[0] = (0, 0, 0)
             self.hardware["Neopixel"] = True
         except Exception as e:
@@ -217,9 +211,7 @@ class PyCubed:
 
         # Initialize radio #1 - UHF
         try:
-            self.RADIO = rfm9x.RFM9x(
-                self.spi, _rf_cs1, _rf_rst1, 433, code_rate=8, baudrate=1320000
-            )
+            self.RADIO = rfm9x.RFM9x(self.spi, _rf_cs1, _rf_rst1, 433, code_rate=8, baudrate=1320000)
             # Default LoRa Modulation Settings
             # Frequency: 433 MHz, SF7, BW125kHz, CR4/8, Preamble=8, CRC=True
             self.RADIO.dio0 = self.RADIO_DIO0

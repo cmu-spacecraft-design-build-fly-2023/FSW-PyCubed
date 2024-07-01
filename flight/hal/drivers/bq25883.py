@@ -138,17 +138,18 @@ class BQ25883(Driver):
     """
     ----------------------- HANDLER METHODS -----------------------
     """
+
     def get_flags(self):
         flags = {}
         status = self.fault_status()
-        if (status & 0x10):
-            flags['VBUS_OVP_STAT'] = None
-        if (status & (0x1 << 5)):
-            flags['TSHUT_STAT'] = None
-        if (status & (0x1 << 6)):
-            flags['BATOVP_STAT'] = None
-        if (status & (0x1 << 7)):
-            flags['TMR_STAT'] = None
+        if status & 0x10:
+            flags["VBUS_OVP_STAT"] = None
+        if status & (0x1 << 5):
+            flags["TSHUT_STAT"] = None
+        if status & (0x1 << 6):
+            flags["BATOVP_STAT"] = None
+        if status & (0x1 << 7):
+            flags["TMR_STAT"] = None
         return flags
 
     ######################### DIAGNOSTICS #########################

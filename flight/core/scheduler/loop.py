@@ -39,9 +39,7 @@ class Sleeper:
         return self.task.priority
 
     def __repr__(self):
-        return "{{Sleeper remaining: {:.2f}, task: {} }}".format(
-            (self.resume_nanos() - _monotonic_ns()), self.task
-        )
+        return "{{Sleeper remaining: {:.2f}, task: {} }}".format((self.resume_nanos() - _monotonic_ns()), self.task)
 
     __str__ = __repr__
 
@@ -108,9 +106,7 @@ class ScheduledTask:
                 if self._stop:
                     return  # Check before running
 
-                iteration = self._forward_async_fn(
-                    *self._forward_args, **self._forward_kwargs
-                )
+                iteration = self._forward_async_fn(*self._forward_args, **self._forward_kwargs)
 
                 self._running = True
                 try:
@@ -124,9 +120,7 @@ class ScheduledTask:
                 # Try to reschedule for the next window without skew. If we're falling behind,
                 # just go as fast as possible & schedule to run "now." If we catch back up again
                 # we'll return to seconds_per_invocation without doing a bunch of catchup runs.
-                target_run_nanos = (
-                    target_run_nanos + self._nanoseconds_per_invocation
-                )
+                target_run_nanos = target_run_nanos + self._nanoseconds_per_invocation
                 # print('target_run_nanos is ', target_run_nanos)
                 now_nanos = _monotonic_ns()
                 if now_nanos <= target_run_nanos:
@@ -142,9 +136,7 @@ class ScheduledTask:
     def __repr__(self):
         hz = 1 / (self._nanoseconds_per_invocation / 1000000000)
         state = "running" if self._running else "waiting"
-        return "{{ScheduledTask {} rate: {}hz, fn: {}}}".format(
-            state, hz, self._forward_async_fn
-        )
+        return "{{ScheduledTask {} rate: {}hz, fn: {}}}".format(state, hz, self._forward_async_fn)
 
     __str__ = __repr__
 
@@ -219,9 +211,7 @@ class Loop:
 
         :returns (async_suspender, resumer)
         """
-        assert (
-            self._current is not None
-        ), "You can only suspend the current task if you are running the event loop."
+        assert self._current is not None, "You can only suspend the current task if you are running the event loop."
         suspended = self._current
 
         def resume():
@@ -230,9 +220,7 @@ class Loop:
         self._current = None
         return _yield_once(), resume
 
-    def schedule(
-        self, hz: float, coroutine_function, priority, *args, **kwargs
-    ):
+    def schedule(self, hz: float, coroutine_function, priority, *args, **kwargs):
         """
         Describe how often a method should be called.
 
@@ -253,18 +241,12 @@ class Loop:
         :param coroutine_function: the async def function you want invoked on your schedule
         :param event_loop: An event loop that can .sleep() and .add_task.  Like BudgetEventLoop.
         """
-        assert (
-            coroutine_function is not None
-        ), "coroutine function must not be none"
-        task = ScheduledTask(
-            self, hz, coroutine_function, priority, args, kwargs
-        )
+        assert coroutine_function is not None, "coroutine function must not be none"
+        task = ScheduledTask(self, hz, coroutine_function, priority, args, kwargs)
         task.start()
         return task
 
-    def schedule_later(
-        self, hz: float, coroutine_function, priority, *args, **kwargs
-    ):
+    def schedule_later(self, hz: float, coroutine_function, priority, *args, **kwargs):
         """
         Like schedule, but invokes the coroutine_function after the first hz interval.
 
@@ -299,17 +281,11 @@ class Loop:
         Other Exceptions that reach the runner break out, stopping your app and showing a stack trace.
         """
 
-        assert (
-            self._current is None
-        ), "Loop can only be advanced by 1 stack frame at a time."
+        assert self._current is None, "Loop can only be advanced by 1 stack frame at a time."
         self._loopnum = 0
         while self._tasks or self._sleeping:
             if self._debug:
-                print(
-                    "[{}] ---- sleeping: {}, active: {}\n".format(
-                        self._loopnum, len(self._sleeping), len(self._tasks)
-                    )
-                )
+                print("[{}] ---- sleeping: {}, active: {}\n".format(self._loopnum, len(self._sleeping), len(self._tasks)))
             self._step()
             self._loopnum += 1
         if self._debug:
@@ -332,9 +308,7 @@ class Loop:
                 print("    {}".format(i))
 
         # Create the ready list based on whichever tasks are ready to be executed
-        self._ready = [
-            x for x in self._sleeping if x.resume_nanos() <= _monotonic_ns()
-        ]
+        self._ready = [x for x in self._sleeping if x.resume_nanos() <= _monotonic_ns()]
         # Sort the ready tasks based on priority
         self._ready.sort(key=lambda x: x.task.priority)
 
@@ -402,9 +376,7 @@ class Loop:
         From within a coroutine, sleeps until the target time.monotonic_ns
         Returns the thing to await
         """
-        assert (
-            self._current is not None
-        ), "You can only sleep from within a task"
+        assert self._current is not None, "You can only sleep from within a task"
         self._sleeping.append(Sleeper(target_run_nanos, self._current))
         if self._debug:
             print("  sleeping ", self._current)

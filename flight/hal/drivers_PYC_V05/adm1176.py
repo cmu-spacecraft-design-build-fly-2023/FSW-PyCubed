@@ -58,9 +58,7 @@ class ADM1176:
         raw_voltage = ((_BUFFER[0] << 8) | (_BUFFER[2] & DATA_V_MASK)) >> 4
         raw_current = (_BUFFER[1] << 4) | (_BUFFER[2] & DATA_I_MASK)
         _voltage = (26.35 / 4096) * raw_voltage  # volts
-        _current = (
-            (0.10584 / 4096) * raw_current
-        ) / self.sense_resistor  # amperes
+        _current = ((0.10584 / 4096) * raw_current) / self.sense_resistor  # amperes
         return (_voltage, _current)
 
     @property

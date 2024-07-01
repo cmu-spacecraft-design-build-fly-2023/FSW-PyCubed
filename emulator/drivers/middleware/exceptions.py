@@ -116,8 +116,8 @@ class torque_z_fatal_exception(Exception):
         return f"{type(self.exception).__name__}: {self.exception}"
 
 
-class sun_sensor_xp_fatal_exception(Exception):
-    """sun_sensor_xp_fatal_exception: Exception for fatal sun sensor in the x+ direction errors"""
+class light_sensor_xp_fatal_exception(Exception):
+    """light_sensor_xp_fatal_exception: Exception for fatal light sensor in the x+ direction errors"""
 
     def __init__(self, exception: Exception):
         self.exception = exception
@@ -127,8 +127,8 @@ class sun_sensor_xp_fatal_exception(Exception):
         return f"{type(self.exception).__name__}: {self.exception}"
 
 
-class sun_sensor_xm_fatal_exception(Exception):
-    """sun_sensor_xm_fatal_exception: Exception for fatal sun sensor in the x- direction errors"""
+class light_sensor_xm_fatal_exception(Exception):
+    """light_sensor_xm_fatal_exception: Exception for fatal light sensor in the x- direction errors"""
 
     def __init__(self, exception: Exception):
         self.exception = exception
@@ -138,8 +138,8 @@ class sun_sensor_xm_fatal_exception(Exception):
         return f"{type(self.exception).__name__}: {self.exception}"
 
 
-class sun_sensor_yp_fatal_exception(Exception):
-    """sun_sensor_yp_fatal_exception: Exception for fatal sun sensor in the y+ direction errors"""
+class light_sensor_yp_fatal_exception(Exception):
+    """light_sensor_yp_fatal_exception: Exception for fatal light sensor in the y+ direction errors"""
 
     def __init__(self, exception: Exception):
         self.exception = exception
@@ -149,8 +149,8 @@ class sun_sensor_yp_fatal_exception(Exception):
         return f"{type(self.exception).__name__}: {self.exception}"
 
 
-class sun_sensor_ym_fatal_exception(Exception):
-    """sun_sensor_ym_fatal_exception: Exception for fatal sun sensor in the y- direction errors"""
+class light_sensor_ym_fatal_exception(Exception):
+    """light_sensor_ym_fatal_exception: Exception for fatal light sensor in the y- direction errors"""
 
     def __init__(self, exception: Exception):
         self.exception = exception
@@ -160,19 +160,8 @@ class sun_sensor_ym_fatal_exception(Exception):
         return f"{type(self.exception).__name__}: {self.exception}"
 
 
-class sun_sensor_zp_fatal_exception(Exception):
-    """sun_sensor_z_fatal_exception: Exception for fatal sun sensor in the z direction errors"""
-
-    def __init__(self, exception: Exception):
-        self.exception = exception
-        super().__init__()
-
-    def __str__(self):
-        return f"{type(self.exception).__name__}: {self.exception}"
-
-
-class sun_sensor_zm_fatal_exception(Exception):
-    """sun_sensor_zm_fatal_exception: Exception for fatal sun sensor in the z direction errors"""
+class light_sensor_zp_fatal_exception(Exception):
+    """light_sensor_z_fatal_exception: Exception for fatal light sensor in the z direction errors"""
 
     def __init__(self, exception: Exception):
         self.exception = exception

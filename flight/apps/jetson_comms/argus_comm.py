@@ -9,6 +9,7 @@ to the GPIO pins for signaling
 Author(s): Sachit Goyal, Harry Rosmann
 
 """
+
 from time import sleep
 
 from apps.jetson_comms.msg import Definitions, Message
@@ -73,18 +74,14 @@ class ArgusComm:
         self.uart.reset_input_buffer()
         # print("Received header:", header)
 
-        (seq_num, packet_type, payload_size) = Message.parse_packet_meta(
-            header
-        )
+        (seq_num, packet_type, payload_size) = Message.parse_packet_meta(header)
 
         if packet_type != Definitions.PKT_TYPE_HEADER:
             # clear uart buffer
             raise RuntimeError("Invalid header")
 
         # do something with message type
-        (message_type, num_packets) = Message.parse_header_payload(
-            header[Definitions.PKT_METADATA_SIZE :]
-        )
+        (message_type, num_packets) = Message.parse_header_payload(header[Definitions.PKT_METADATA_SIZE :])
         # print("Metadata:", message_type, num_packets)
 
         # Read image from Jetson
@@ -101,14 +98,9 @@ class ArgusComm:
             packet = self.uart.read(Definitions.PACKET_SIZE)
             # print(f"Received packet")
 
-            (seq_num, packet_type, payload_size) = Message.parse_packet_meta(
-                packet
-            )
+            (seq_num, packet_type, payload_size) = Message.parse_packet_meta(packet)
 
-            if (
-                packet_type == Definitions.PKT_TYPE_DATA
-                and seq_num == expected_seq_num
-            ):
+            if packet_type == Definitions.PKT_TYPE_DATA and seq_num == expected_seq_num:
                 expected_seq_num += 1
                 retries = 0
                 # else:

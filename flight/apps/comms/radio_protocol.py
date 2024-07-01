@@ -460,9 +460,7 @@ def convert_floating_point_hp(message_list):
 
     # Extract bytes for val, combine
     val += message_list[0]
-    val += (
-        (message_list[1] << 16) + (message_list[2] << 8) + message_list[3]
-    ) / 16777216
+    val += ((message_list[1] << 16) + (message_list[2] << 8) + message_list[3]) / 16777216
     if neg_bit_flag == 1:
         val = -1 * val
 

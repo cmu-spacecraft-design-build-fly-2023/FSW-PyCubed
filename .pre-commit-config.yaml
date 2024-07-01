@@ -12,7 +12,7 @@ repos:
     rev: 7.0.0
     hooks:
       - id: flake8
-        # args: [--ignore=F401,E266,E203,--max-line-length=127]
+        args: ["--ignore=F401,E266,E203", "--max-line-length=127"]
         exclude: ^build/
 
   - repo: https://github.com/pycqa/isort

@@ -202,13 +202,9 @@ class RFM9x(Driver):
 
     operation_mode = _RegisterBits(_RH_RF95_REG_01_OP_MODE, bits=3)
 
-    low_frequency_mode = _RegisterBits(
-        _RH_RF95_REG_01_OP_MODE, offset=3, bits=1
-    )
+    low_frequency_mode = _RegisterBits(_RH_RF95_REG_01_OP_MODE, offset=3, bits=1)
 
-    osc_calibration = _RegisterBits(
-        _RH_RF95_REG_24_HOP_PERIOD, offset=3, bits=1
-    )
+    osc_calibration = _RegisterBits(_RH_RF95_REG_24_HOP_PERIOD, offset=3, bits=1)
 
     modulation_type = _RegisterBits(_RH_RF95_REG_01_OP_MODE, offset=5, bits=2)
 
@@ -229,13 +225,9 @@ class RFM9x(Driver):
 
     pa_dac = _RegisterBits(_RH_RF95_REG_4D_PA_DAC, bits=3)
 
-    dio0_mapping = _RegisterBits(
-        _RH_RF95_REG_40_DIO_MAPPING1, offset=6, bits=2
-    )
+    dio0_mapping = _RegisterBits(_RH_RF95_REG_40_DIO_MAPPING1, offset=6, bits=2)
 
-    low_datarate_optimize = _RegisterBits(
-        _RH_RF95_REG_26_MODEM_CONFIG3, offset=3, bits=1
-    )
+    low_datarate_optimize = _RegisterBits(_RH_RF95_REG_26_MODEM_CONFIG3, offset=3, bits=1)
     auto_agc = _RegisterBits(_RH_RF95_REG_26_MODEM_CONFIG3, offset=2, bits=1)
 
     debug = False
@@ -271,9 +263,7 @@ class RFM9x(Driver):
 
         # Device support SPI mode 0 (polarity & phase = 0) up to a max of 10mhz.
         # Set Default Baudrate to 5MHz to avoid problems
-        self._device = spidev.SPIDevice(
-            spi, self.__cs, baudrate=baudrate, polarity=0, phase=0
-        )
+        self._device = spidev.SPIDevice(spi, self.__cs, baudrate=baudrate, polarity=0, phase=0)
         # Setup reset as a digital input (default state for reset line according
         # to the datasheet).  This line is pulled low as an output quickly to
         # trigger a reset.  Note that reset MUST be done like this and set as
@@ -285,9 +275,7 @@ class RFM9x(Driver):
         # throw a nicer message to indicate possible wiring problems.
         version = self._read_u8(_RH_RF95_REG_42_VERSION)
         if version != 18:
-            raise RuntimeError(
-                f"Failed to find rfm9x with expected version -- check wiring. Found {version}"
-            )
+            raise RuntimeError(f"Failed to find rfm9x with expected version -- check wiring. Found {version}")
 
         # Set sleep mode, wait 10ms and confirm in sleep mode (basic device check).
         # Also set long range mode (LoRa mode) as it can only be done in sleep.
@@ -300,9 +288,7 @@ class RFM9x(Driver):
         sleep(0.01)
         self.long_range_mode = True
         if self.operation_mode != SLEEP_MODE or not self.long_range_mode:
-            raise RuntimeError(
-                "Failed to configure radio for LoRa mode, check wiring!"
-            )
+            raise RuntimeError("Failed to configure radio for LoRa mode, check wiring!")
         # clear default setting for access to LF registers if frequency > 525MHz
         if frequency > 525:
             self.low_frequency_mode = 0
@@ -648,8 +634,7 @@ class RFM9x(Driver):
             bw_id = 9
         self._write_u8(
             _RH_RF95_REG_1D_MODEM_CONFIG1,
-            (self._read_u8(_RH_RF95_REG_1D_MODEM_CONFIG1) & 0x0F)
-            | (bw_id << 4),
+            (self._read_u8(_RH_RF95_REG_1D_MODEM_CONFIG1) & 0x0F) | (bw_id << 4),
         )
         if val >= 500000:
             # see Semtech SX1276 errata note 2.1
@@ -680,8 +665,7 @@ class RFM9x(Driver):
         cr_id = denominator - 4
         self._write_u8(
             _RH_RF95_REG_1D_MODEM_CONFIG1,
-            (self._read_u8(_RH_RF95_REG_1D_MODEM_CONFIG1) & 0xF1)
-            | (cr_id << 1),
+            (self._read_u8(_RH_RF95_REG_1D_MODEM_CONFIG1) & 0xF1) | (cr_id << 1),
         )
 
     def spreading_factor(self):
@@ -698,24 +682,15 @@ class RFM9x(Driver):
         self._write_u8(_RH_RF95_DETECTION_OPTIMIZE, 0xC5 if val == 6 else 0xC3)
 
         if self.signal_bandwidth() >= 5000000:
-            self._write_u8(
-                _RH_RF95_DETECTION_OPTIMIZE, 0xC5 if val == 6 else 0xC3
-            )
+            self._write_u8(_RH_RF95_DETECTION_OPTIMIZE, 0xC5 if val == 6 else 0xC3)
         else:
             # see Semtech SX1276 errata note 2.3
-            self._write_u8(
-                _RH_RF95_DETECTION_OPTIMIZE, 0x45 if val == 6 else 0x43
-            )
+            self._write_u8(_RH_RF95_DETECTION_OPTIMIZE, 0x45 if val == 6 else 0x43)
 
-        self._write_u8(
-            _RH_RF95_DETECTION_THRESHOLD, 0x0C if val == 6 else 0x0A
-        )
+        self._write_u8(_RH_RF95_DETECTION_THRESHOLD, 0x0C if val == 6 else 0x0A)
         self._write_u8(
             _RH_RF95_REG_1E_MODEM_CONFIG2,
-            (
-                (self._read_u8(_RH_RF95_REG_1E_MODEM_CONFIG2) & 0x0F)
-                | ((val << 4) & 0xF0)
-            ),
+            ((self._read_u8(_RH_RF95_REG_1E_MODEM_CONFIG2) & 0x0F) | ((val << 4) & 0xF0)),
         )
 
     def enable_crc(self):
@@ -806,9 +781,7 @@ class RFM9x(Driver):
         self.idle()  # Stop receiving to clear FIFO and keep it clear.
         length += 4
         # Fill the FIFO with a packet to send.
-        self._write_u8(
-            _RH_RF95_REG_0D_FIFO_ADDR_PTR, 0x00
-        )  # FIFO starts at 0.
+        self._write_u8(_RH_RF95_REG_0D_FIFO_ADDR_PTR, 0x00)  # FIFO starts at 0.
 
         # Combine header and data to form payload
         if data == b"!":
@@ -890,15 +863,11 @@ class RFM9x(Driver):
             self.send(data, keep_listening=True)
             # Don't look for ACK from Broadcast message
             if self.destination == _RH_BROADCAST_ADDRESS:
-                print(
-                    "uhf destination=RHbroadcast address (dont look for ack)"
-                )
+                print("uhf destination=RHbroadcast address (dont look for ack)")
                 got_ack = True
             else:
                 # wait for a packet from our destination
-                ack_packet = self.receive(
-                    timeout=self.ack_wait, with_header=True
-                )
+                ack_packet = self.receive(timeout=self.ack_wait, with_header=True)
                 if ack_packet is not None:
                     if ack_packet[3] & _RH_FLAGS_ACK:
                         # check the ID
@@ -979,12 +948,8 @@ class RFM9x(Driver):
                 fifo_length = self._read_u8(_RH_RF95_REG_13_RX_NB_BYTES)
                 # Handle if the received packet is too small to include the 4 byte
                 # RadioHead header and at least one byte of data --reject this packet and ignore it.
-                if (
-                    fifo_length > 0
-                ):  # read and clear the FIFO if anything in it
-                    current_addr = self._read_u8(
-                        _RH_RF95_REG_10_FIFO_RX_CURRENT_ADDR
-                    )
+                if fifo_length > 0:  # read and clear the FIFO if anything in it
+                    current_addr = self._read_u8(_RH_RF95_REG_10_FIFO_RX_CURRENT_ADDR)
                     self._write_u8(_RH_RF95_REG_0D_FIFO_ADDR_PTR, current_addr)
                     # packet = bytearray(fifo_length)
                     packet = self.buffview[:fifo_length]
@@ -996,18 +961,10 @@ class RFM9x(Driver):
                     print("missing pckt header")
                     packet = None
                 else:
-                    if (
-                        self.node != _RH_BROADCAST_ADDRESS
-                        and packet[0] != _RH_BROADCAST_ADDRESS
-                        and packet[0] != self.node
-                    ):
+                    if self.node != _RH_BROADCAST_ADDRESS and packet[0] != _RH_BROADCAST_ADDRESS and packet[0] != self.node:
                         packet = None
                     # send ACK unless this was an ACK or a broadcast
-                    elif (
-                        with_ack
-                        and ((packet[3] & _RH_FLAGS_ACK) == 0)
-                        and (packet[0] != _RH_BROADCAST_ADDRESS)
-                    ):
+                    elif with_ack and ((packet[3] & _RH_FLAGS_ACK) == 0) and (packet[0] != _RH_BROADCAST_ADDRESS):
                         # delay before sending Ack to give receiver a chance to get ready
                         if self.ack_delay is not None:
                             sleep(self.ack_delay)
@@ -1033,9 +990,7 @@ class RFM9x(Driver):
                         #     packet = None
                         # else:  # save the packet identifier for this source
                         self.seen_ids[packet[1]] = packet[2]
-                    if (
-                        not with_header and packet is not None
-                    ):  # skip the header if not wanted
+                    if not with_header and packet is not None:  # skip the header if not wanted
                         packet = packet[4:]
 
         if hasattr(self, "txrx"):  # RX
@@ -1104,9 +1059,7 @@ class RFM9x(Driver):
                 # if (packetindex[-1]-(current_addr+fifo_length)) <= 10:
                 # print('{},{},{}'.format(packetindex[-1],current_addr,fifo_length))
                 # msg.append(bytes(self.buffview[packetindex[-1]:current_addr+fifo_length]))
-                yield self.buffview[
-                    packetindex[-1] : current_addr + fifo_length
-                ]
+                yield self.buffview[packetindex[-1] : current_addr + fifo_length]
         else:
             self.listen()
             # Clear interrupt.
@@ -1119,9 +1072,7 @@ class RFM9x(Driver):
 
     def send_fast(self, data, length):
         self.idle()
-        self._write_u8(
-            _RH_RF95_REG_0D_FIFO_ADDR_PTR, 0x00
-        )  # set fifo position
+        self._write_u8(_RH_RF95_REG_0D_FIFO_ADDR_PTR, 0x00)  # set fifo position
         # Write payload.
         self._write_from(_RH_RF95_REG_00_FIFO, data)
         # Write payload and header length.
@@ -1141,15 +1092,14 @@ class RFM9x(Driver):
     """
     ----------------------- HANDLER METHODS -----------------------
     """
+
     def get_flags(self):
         return {}
 
     ######################### DIAGNOSTICS #########################
     def _read_frequency(self) -> bool:
         frequency = self._device.frequency_mhz()
-        if math.isclose(frequency, 433, abs_tol=1) or math.isclose(
-            frequency, 915, abs_tol=1
-        ):
+        if math.isclose(frequency, 433, abs_tol=1) or math.isclose(frequency, 915, abs_tol=1):
             return True
         else:
             return False

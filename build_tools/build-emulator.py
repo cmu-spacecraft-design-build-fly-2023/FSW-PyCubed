@@ -25,14 +25,12 @@ def create_build(source_folder, emulator_folder):
                 continue
             if os.path.relpath(root, source_folder).startswith("hal/"):
                 continue
-            if file.startswith('data_handler'):
+            if file.startswith("data_handler"):
                 continue
             if file.endswith(".py"):
                 source_path = os.path.join(root, file)
 
-                build_path = os.path.join(
-                    build_folder, os.path.relpath(source_path, source_folder)
-                )
+                build_path = os.path.join(build_folder, os.path.relpath(source_path, source_folder))
 
                 os.makedirs(os.path.dirname(build_path), exist_ok=True)
                 shutil.copy2(source_path, build_path)
@@ -57,9 +55,7 @@ def create_build(source_folder, emulator_folder):
             if os.path.relpath(root, emulator_folder).startswith("fake_core"):
                 continue
             source_path = os.path.join(root, file)
-            build_path = os.path.join(
-                hal_folder, os.path.relpath(source_path, emulator_folder)
-            )
+            build_path = os.path.join(hal_folder, os.path.relpath(source_path, emulator_folder))
             os.makedirs(os.path.dirname(build_path), exist_ok=True)
             shutil.copy2(source_path, build_path)
             print(f"Copied {source_path} to {build_path}")
@@ -97,9 +93,7 @@ def copy_folder(build_folder, destination_folder, show_identical_files=True):
             else:
                 if filecmp.cmp(source_path, destination_path):
                     if show_identical_files:
-                        print(
-                            f"File {source_path} already exists and is identical."
-                        )
+                        print(f"File {source_path} already exists and is identical.")
                 else:
                     shutil.copy2(source_path, destination_path)
                     print(f"Overwrote {destination_path} with {source_path}")
@@ -108,9 +102,7 @@ def copy_folder(build_folder, destination_folder, show_identical_files=True):
     for root, dirs, files in os.walk(destination_folder):
         for file in files:
             destination_path = os.path.join(root, file)
-            relative_path = os.path.relpath(
-                destination_path, destination_folder
-            )
+            relative_path = os.path.relpath(destination_path, destination_folder)
             source_path = os.path.join(build_folder, relative_path)
 
             if not os.path.exists(source_path):
@@ -137,7 +129,7 @@ if __name__ == "__main__":
         type=str,
         default="emulator",
         help="emulator folder path",
-        required=False
+        required=False,
     )
     args = parser.parse_args()
 

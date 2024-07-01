@@ -190,14 +190,10 @@ class DRV8830:
         # Constrain throttle voltage value
         new_throttle_volts = min(max(new_throttle_volts, -5.1), +5.1)
         if new_throttle_volts < 0:
-            self._vset = VoltageAdapter.voltage_to_index(
-                self, abs(new_throttle_volts)
-            )
+            self._vset = VoltageAdapter.voltage_to_index(self, abs(new_throttle_volts))
             self._in_x = BridgeControl.REVERSE
         elif new_throttle_volts > 0:
-            self._vset = VoltageAdapter.voltage_to_index(
-                self, new_throttle_volts
-            )
+            self._vset = VoltageAdapter.voltage_to_index(self, new_throttle_volts)
             self._in_x = BridgeControl.FORWARD
         else:
             self._vset = 0

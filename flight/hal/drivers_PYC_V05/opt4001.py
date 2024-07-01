@@ -188,17 +188,11 @@ class OPT4001:
     # Locations of these bits are descirbed in page 30 and 31 of the datasheet
     quick_wakeup = RWBit(CONFIGURATION, 15, register_width=2, lsb_first=False)
     lux_range = RWBits(4, CONFIGURATION, 10, register_width=2, lsb_first=False)
-    conversion_time = RWBits(
-        4, CONFIGURATION, 6, register_width=2, lsb_first=False
-    )
-    operating_mode = RWBits(
-        2, CONFIGURATION, 4, register_width=2, lsb_first=False
-    )
+    conversion_time = RWBits(4, CONFIGURATION, 6, register_width=2, lsb_first=False)
+    operating_mode = RWBits(2, CONFIGURATION, 4, register_width=2, lsb_first=False)
     latch = RWBit(CONFIGURATION, 3, register_width=2, lsb_first=False)
     int_pol = RWBit(CONFIGURATION, 2, register_width=2, lsb_first=False)
-    fault_count = RWBits(
-        2, CONFIGURATION, 0, register_width=2, lsb_first=False
-    )
+    fault_count = RWBits(2, CONFIGURATION, 0, register_width=2, lsb_first=False)
 
     # flags
     overload_flag = ROBit(FLAGS, 3, register_width=2, lsb_first=False)

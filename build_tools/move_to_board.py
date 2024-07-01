@@ -33,9 +33,7 @@ def copy_folder(source_folder, destination_folder, show_identical_files=True):
             else:
                 if filecmp.cmp(source_path, destination_path):
                     if show_identical_files:
-                        print(
-                            f"File {source_path} already exists and is identical."
-                        )
+                        print(f"File {source_path} already exists and is identical.")
                 else:
                     shutil.copy2(source_path, destination_path)
                     print(f"Overwrote {destination_path} with {source_path}")
@@ -44,9 +42,7 @@ def copy_folder(source_folder, destination_folder, show_identical_files=True):
     for root, dirs, files in os.walk(destination_folder):
         for file in files:
             destination_path = os.path.join(root, file)
-            relative_path = os.path.relpath(
-                destination_path, destination_folder
-            )
+            relative_path = os.path.relpath(destination_path, destination_folder)
             source_path = os.path.join(source_folder, relative_path)
 
             """if not os.path.exists(source_path):
@@ -58,9 +54,7 @@ if __name__ == "__main__":
     if platform.system() == "Windows":
         BOARD_PATH = "D:\\"
     elif platform.system() == "Linux":
-        username = (
-            subprocess.check_output("whoami", shell=True).decode().strip()
-        )
+        username = subprocess.check_output("whoami", shell=True).decode().strip()
         BOARD_PATH = f"/media/{username}/ARGUS"
         if not os.path.exists(BOARD_PATH):
             BOARD_PATH = f"/media/{username}/PYCUBED"

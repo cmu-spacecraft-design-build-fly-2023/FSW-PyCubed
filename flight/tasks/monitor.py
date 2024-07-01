@@ -57,13 +57,9 @@ class Task(TemplateTask):
         if SM.current_state == "NOMINAL":
             # If process not registered, register it
             if not DH.data_process_exists("monitor"):
-                DH.register_data_process(
-                    "monitor", self.data_keys, "ffffb", True, line_limit=50
-                )
+                DH.register_data_process("monitor", self.data_keys, "ffffb", True, line_limit=50)
 
             DH.log_data("monitor", readings)
 
             print(f"[{self.ID}][{self.name}] Data: {readings}")
-            print(
-                f"[{self.ID}][{self.name}] {gc.mem_free()} free bytes in memory"
-            )
+            print(f"[{self.ID}][{self.name}] {gc.mem_free()} free bytes in memory")

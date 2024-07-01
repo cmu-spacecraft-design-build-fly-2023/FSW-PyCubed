@@ -69,7 +69,7 @@ class ArgusV1Components:
     Represents the components used in the Argus V1 system.
 
     This class defines constants for various components such as GPS, battery power monitor,
-    Jetson power monitor, IMU, charger, torque coils, sun sensors, radio, and SD card.
+    Jetson power monitor, IMU, charger, torque coils, light sensors, radio, and SD card.
     """
 
     # GPS
@@ -102,13 +102,12 @@ class ArgusV1Components:
     TORQUE_Z_I2C_ADDRESS = const(0x66)
 
     # SUN SENSORS
-    SUN_SENSORS_I2C = ArgusV1Interfaces.I2C2
-    SUN_SENSOR_XP_I2C_ADDRESS = const(0x44)
-    SUN_SENSOR_XM_I2C_ADDRESS = const(0x45)
-    SUN_SENSOR_YP_I2C_ADDRESS = const(0x46)
-    SUN_SENSOR_YM_I2C_ADDRESS = const(0x47)
-    SUN_SENSOR_ZP_I2C_ADDRESS = const(0x48)
-    SUN_SENSOR_ZM_I2C_ADDRESS = const(0x4A)
+    LIGHT_SENSORS_I2C = ArgusV1Interfaces.I2C2
+    LIGHT_SENSOR_XP_I2C_ADDRESS = const(0x44)
+    LIGHT_SENSOR_XM_I2C_ADDRESS = const(0x45)
+    LIGHT_SENSOR_YP_I2C_ADDRESS = const(0x46)
+    LIGHT_SENSOR_YM_I2C_ADDRESS = const(0x47)
+    LIGHT_SENSOR_ZP_I2C_ADDRESS = const(0x48)
 
     # RADIO
     RADIO_SPI = ArgusV1Interfaces.SPI
@@ -185,20 +184,17 @@ class ArgusV1(CubeSat):
         error_list += self.__jetson_power_monitor_boot()
         error_list += self.__charger_boot()
         error_list += self.__torque_interface_boot()
-        error_list += self.__sun_sensor_xp_boot()
-        error_list += self.__sun_sensor_xm_boot()
-        error_list += self.__sun_sensor_yp_boot()
-        error_list += self.__sun_sensor_ym_boot()
-        error_list += self.__sun_sensor_zp_boot()
-        error_list += self.__sun_sensor_zm_boot()
+        error_list += self.__light_sensor_xp_boot()
+        error_list += self.__light_sensor_xm_boot()
+        error_list += self.__light_sensor_yp_boot()
+        error_list += self.__light_sensor_ym_boot()
+        error_list += self.__light_sensor_zp_boot()
         error_list += self.__radio_boot()
         error_list += self.__neopixel_boot()
         error_list += self.__burn_wire_boot()
         error_list += self.__payload_uart_boot()
 
-        error_list = [
-            error for error in error_list if error != Diagnostics.NOERROR
-        ]
+        error_list = [error for error in error_list if error != Diagnostics.NOERROR]
 
         if self.__debug:
             print("Boot Errors:")
@@ -221,9 +217,7 @@ class ArgusV1(CubeSat):
         :return: Error code if the GPS failed to initialize
         """
         try:
-            gps1 = GPS(
-                ArgusV1Components.GPS_UART, ArgusV1Components.GPS_ENABLE
-            )
+            gps1 = GPS(ArgusV1Components.GPS_UART, ArgusV1Components.GPS_ENABLE)
 
             if self.__middleware_enabled:
                 gps1 = Middleware(gps1)
@@ -470,9 +464,7 @@ class ArgusV1(CubeSat):
 
         # X direction
         try:
-            torque_interface = TorqueInterface(
-                self.__torque_xp_driver, self.__torque_xm_driver
-            )
+            torque_interface = TorqueInterface(self.__torque_xp_driver, self.__torque_xm_driver)
             self.__torque_x = torque_interface
         except Exception as e:
             if self.__debug:
@@ -480,9 +472,7 @@ class ArgusV1(CubeSat):
 
         # Y direction
         try:
-            torque_interface = TorqueInterface(
-                self.__torque_yp_driver, self.__torque_ym_driver
-            )
+            torque_interface = TorqueInterface(self.__torque_yp_driver, self.__torque_ym_driver)
             self.__torque_y = torque_interface
         except Exception as e:
             if self.__debug:
@@ -498,22 +488,22 @@ class ArgusV1(CubeSat):
 
         return error_list
 
-    def __sun_sensor_xp_boot(self) -> list[int]:
-        """sun_sensor_xp_boot: Boot sequence for the sun sensor in the x+ direction
+    def __light_sensor_xp_boot(self) -> list[int]:
+        """light_sensor_xp_boot: Boot sequence for the light sensor in the x+ direction
 
-        :return: Error code if the sun sensor failed to initialize
+        :return: Error code if the light sensor failed to initialize
         """
         try:
-            sun_sensor_xp = OPT4001(
-                ArgusV1Components.SUN_SENSORS_I2C,
-                ArgusV1Components.SUN_SENSOR_XP_I2C_ADDRESS,
+            light_sensor_xp = OPT4001(
+                ArgusV1Components.LIGHT_SENSORS_I2C,
+                ArgusV1Components.LIGHT_SENSOR_XP_I2C_ADDRESS,
             )
 
             if self.__middleware_enabled:
-                sun_sensor_xp = Middleware(sun_sensor_xp)
+                light_sensor_xp = Middleware(light_sensor_xp)
 
-            self.__sun_sensor_xp = sun_sensor_xp
-            self.__device_list.append(sun_sensor_xp)
+            self.__light_sensor_xp = light_sensor_xp
+            self.__device_list.append(light_sensor_xp)
         except Exception as e:
             if self.__debug:
                 raise e
@@ -522,22 +512,22 @@ class ArgusV1(CubeSat):
 
         return [Diagnostics.NOERROR]
 
-    def __sun_sensor_xm_boot(self) -> list[int]:
-        """sun_sensor_xm_boot: Boot sequence for the sun sensor in the x- direction
+    def __light_sensor_xm_boot(self) -> list[int]:
+        """light_sensor_xm_boot: Boot sequence for the light sensor in the x- direction
 
-        :return: Error code if the sun sensor failed to initialize
+        :return: Error code if the light sensor failed to initialize
         """
         try:
-            sun_sensor_xm = OPT4001(
-                ArgusV1Components.SUN_SENSORS_I2C,
-                ArgusV1Components.SUN_SENSOR_XM_I2C_ADDRESS,
+            light_sensor_xm = OPT4001(
+                ArgusV1Components.LIGHT_SENSORS_I2C,
+                ArgusV1Components.LIGHT_SENSOR_XM_I2C_ADDRESS,
             )
 
             if self.__middleware_enabled:
-                sun_sensor_xm = Middleware(sun_sensor_xm)
+                light_sensor_xm = Middleware(light_sensor_xm)
 
-            self.__sun_sensor_xm = sun_sensor_xm
-            self.__device_list.append(sun_sensor_xm)
+            self.__light_sensor_xm = light_sensor_xm
+            self.__device_list.append(light_sensor_xm)
         except Exception as e:
             if self.__debug:
                 raise e
@@ -546,22 +536,22 @@ class ArgusV1(CubeSat):
 
         return [Diagnostics.NOERROR]
 
-    def __sun_sensor_yp_boot(self) -> list[int]:
-        """sun_sensor_yp_boot: Boot sequence for the sun sensor in the y+ direction
+    def __light_sensor_yp_boot(self) -> list[int]:
+        """light_sensor_yp_boot: Boot sequence for the light sensor in the y+ direction
 
-        :return: Error code if the sun sensor failed to initialize
+        :return: Error code if the light sensor failed to initialize
         """
         try:
-            sun_sensor_yp = OPT4001(
-                ArgusV1Components.SUN_SENSORS_I2C,
-                ArgusV1Components.SUN_SENSOR_YP_I2C_ADDRESS,
+            light_sensor_yp = OPT4001(
+                ArgusV1Components.LIGHT_SENSORS_I2C,
+                ArgusV1Components.LIGHT_SENSOR_YP_I2C_ADDRESS,
             )
 
             if self.__middleware_enabled:
-                sun_sensor_yp = Middleware(sun_sensor_yp)
+                light_sensor_yp = Middleware(light_sensor_yp)
 
-            self.__sun_sensor_yp = sun_sensor_yp
-            self.__device_list.append(sun_sensor_yp)
+            self.__light_sensor_yp = light_sensor_yp
+            self.__device_list.append(light_sensor_yp)
         except Exception as e:
             if self.__debug:
                 raise e
@@ -570,22 +560,22 @@ class ArgusV1(CubeSat):
 
         return [Diagnostics.NOERROR]
 
-    def __sun_sensor_ym_boot(self) -> list[int]:
-        """sun_sensor_ym_boot: Boot sequence for the sun sensor in the y- direction
+    def __light_sensor_ym_boot(self) -> list[int]:
+        """light_sensor_ym_boot: Boot sequence for the light sensor in the y- direction
 
-        :return: Error code if the sun sensor failed to initialize
+        :return: Error code if the light sensor failed to initialize
         """
         try:
-            sun_sensor_ym = OPT4001(
-                ArgusV1Components.SUN_SENSORS_I2C,
-                ArgusV1Components.SUN_SENSOR_YM_I2C_ADDRESS,
+            light_sensor_ym = OPT4001(
+                ArgusV1Components.LIGHT_SENSORS_I2C,
+                ArgusV1Components.LIGHT_SENSOR_YM_I2C_ADDRESS,
             )
 
             if self.__middleware_enabled:
-                sun_sensor_ym = Middleware(sun_sensor_ym)
+                light_sensor_ym = Middleware(light_sensor_ym)
 
-            self.__sun_sensor_ym = sun_sensor_ym
-            self.__device_list.append(sun_sensor_ym)
+            self.__light_sensor_ym = light_sensor_ym
+            self.__device_list.append(light_sensor_ym)
         except Exception as e:
             if self.__debug:
                 raise e
@@ -594,46 +584,22 @@ class ArgusV1(CubeSat):
 
         return [Diagnostics.NOERROR]
 
-    def __sun_sensor_zp_boot(self) -> list[int]:
-        """sun_sensor_zp_boot: Boot sequence for the sun sensor in the z+ direction
+    def __light_sensor_zp_boot(self) -> list[int]:
+        """light_sensor_zp_boot: Boot sequence for the light sensor in the z+ direction
 
-        :return: Error code if the sun sensor failed to initialize
+        :return: Error code if the light sensor failed to initialize
         """
         try:
-            sun_sensor_zp = OPT4001(
-                ArgusV1Components.SUN_SENSORS_I2C,
-                ArgusV1Components.SUN_SENSOR_ZP_I2C_ADDRESS,
+            light_sensor_zp = OPT4001(
+                ArgusV1Components.LIGHT_SENSORS_I2C,
+                ArgusV1Components.LIGHT_SENSOR_ZP_I2C_ADDRESS,
             )
 
             if self.__middleware_enabled:
-                sun_sensor_zp = Middleware(sun_sensor_zp)
+                light_sensor_zp = Middleware(light_sensor_zp)
 
-            self.__sun_sensor_zp = sun_sensor_zp
-            self.__device_list.append(sun_sensor_zp)
-        except Exception as e:
-            if self.__debug:
-                raise e
-
-            return [Diagnostics.OPT4001_NOT_INITIALIZED]
-
-        return [Diagnostics.NOERROR]
-
-    def __sun_sensor_zm_boot(self) -> list[int]:
-        """sun_sensor_zm_boot: Boot sequence for the sun sensor in the z- direction
-
-        :return: Error code if the sun sensor failed to initialize
-        """
-        try:
-            sun_sensor_zm = OPT4001(
-                ArgusV1Components.SUN_SENSORS_I2C,
-                ArgusV1Components.SUN_SENSOR_ZM_I2C_ADDRESS,
-            )
-
-            if self.__middleware_enabled:
-                sun_sensor_zm = Middleware(sun_sensor_zm)
-
-            self.__sun_sensor_zm = sun_sensor_zm
-            self.__device_list.append(sun_sensor_zm)
+            self.__light_sensor_zp = light_sensor_zp
+            self.__device_list.append(light_sensor_zp)
         except Exception as e:
             if self.__debug:
                 raise e
@@ -676,9 +642,7 @@ class ArgusV1(CubeSat):
         :return: Error code if the RTC failed to initialize
         """
         try:
-            rtc = PCF8523(
-                ArgusV1Components.RTC_I2C, ArgusV1Components.RTC_I2C_ADDRESS
-            )
+            rtc = PCF8523(ArgusV1Components.RTC_I2C, ArgusV1Components.RTC_I2C_ADDRESS)
 
             if self.__middleware_enabled:
                 rtc = Middleware(rtc)
@@ -801,9 +765,7 @@ class ArgusV1(CubeSat):
     ######################## DIAGNOSTICS ########################
     def __get_device_diagnostic_error(self, device) -> list[int]:
         """__get_device_diagnostic_error: Get the error code for a device that failed to initialize"""
-        if isinstance(
-            device, Middleware
-        ):  # Convert device to the wrapped instance
+        if isinstance(device, Middleware):  # Convert device to the wrapped instance
             device = device.get_instance()
 
         if device is self.RTC:
@@ -828,18 +790,16 @@ class ArgusV1(CubeSat):
             return Diagnostics.DIAGNOSTICS_ERROR_TORQUE_YM
         elif device is self.__torque_z_driver:
             return Diagnostics.DIAGNOSTICS_ERROR_TORQUE_Z
-        elif device is self.SUN_SENSOR_XP:
-            return Diagnostics.DIAGNOSTICS_ERROR_SUN_SENSOR_XP
-        elif device is self.SUN_SENSOR_XM:
-            return Diagnostics.DIAGNOSTICS_ERROR_SUN_SENSOR_XM
-        elif device is self.SUN_SENSOR_YP:
-            return Diagnostics.DIAGNOSTICS_ERROR_SUN_SENSOR_YP
-        elif device is self.SUN_SENSOR_YM:
-            return Diagnostics.DIAGNOSTICS_ERROR_SUN_SENSOR_YM
-        elif device is self.SUN_SENSOR_ZP:
-            return Diagnostics.DIAGNOSTICS_ERROR_SUN_SENSOR_ZP
-        elif device is self.SUN_SENSOR_ZM:
-            return Diagnostics.DIAGNOSTICS_ERROR_SUN_SENSOR_ZM
+        elif device is self.LIGHT_SENSOR_XP:
+            return Diagnostics.DIAGNOSTICS_ERROR_LIGHT_SENSOR_XP
+        elif device is self.LIGHT_SENSOR_XM:
+            return Diagnostics.DIAGNOSTICS_ERROR_LIGHT_SENSOR_XM
+        elif device is self.LIGHT_SENSOR_YP:
+            return Diagnostics.DIAGNOSTICS_ERROR_LIGHT_SENSOR_YP
+        elif device is self.LIGHT_SENSOR_YM:
+            return Diagnostics.DIAGNOSTICS_ERROR_LIGHT_SENSOR_YM
+        elif device is self.LIGHT_SENSOR_ZP:
+            return Diagnostics.DIAGNOSTICS_ERROR_LIGHT_SENSOR_ZP
         elif device is self.RADIO:
             return Diagnostics.DIAGNOSTICS_ERROR_RADIO
         elif device is self.NEOPIXEL:

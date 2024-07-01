@@ -30,12 +30,11 @@ class CubeSat:
         self.__torque_x = None
         self.__torque_y = None
         self.__torque_z = None
-        self.__sun_sensor_xp = None
-        self.__sun_sensor_xm = None
-        self.__sun_sensor_yp = None
-        self.__sun_sensor_ym = None
-        self.__sun_sensor_zp = None
-        self.__sun_sensor_zm = None
+        self.__light_sensor_xp = None
+        self.__light_sensor_xm = None
+        self.__light_sensor_yp = None
+        self.__light_sensor_ym = None
+        self.__light_sensor_zp = None
         self.__rtc = None
         self.__radio = None
         self.__sd_card = None
@@ -163,46 +162,39 @@ class CubeSat:
         return self.__torque_z
 
     @property
-    def SUN_SENSOR_XP(self):
-        """SUN_SENSOR_XP: Returns the sun sensor in the x+ direction
+    def LIGHT_SENSOR_XP(self):
+        """LIGHT_SENSOR_XP: Returns the light sensor in the x+ direction
         :return: object or None
         """
-        return self.__sun_sensor_xp
+        return self.__light_sensor_xp
 
     @property
-    def SUN_SENSOR_XM(self):
-        """SUN_SENSOR_XM: Returns the sun sensor in the x- direction
+    def LIGHT_SENSOR_XM(self):
+        """LIGHT_SENSOR_XM: Returns the light sensor in the x- direction
         :return: object or None
         """
-        return self.__sun_sensor_xm
+        return self.__light_sensor_xm
 
     @property
-    def SUN_SENSOR_YP(self):
-        """SUN_SENSOR_YP: Returns the sun sensor in the y+ direction
+    def LIGHT_SENSOR_YP(self):
+        """LIGHT_SENSOR_YP: Returns the light sensor in the y+ direction
         :return: object or None
         """
-        return self.__sun_sensor_yp
+        return self.__light_sensor_yp
 
     @property
-    def SUN_SENSOR_YM(self):
-        """SUN_SENSOR_YM: Returns the sun sensor in the y- direction
+    def LIGHT_SENSOR_YM(self):
+        """LIGHT_SENSOR_YM: Returns the light sensor in the y- direction
         :return: object or None
         """
-        return self.__sun_sensor_ym
+        return self.__light_sensor_ym
 
     @property
-    def SUN_SENSOR_ZP(self):
-        """SUN_SENSOR_ZP: Returns the sun sensor in the z+ direction
+    def LIGHT_SENSOR_ZP(self):
+        """LIGHT_SENSOR_ZP: Returns the light sensor in the z+ direction
         :return: object or None
         """
-        return self.__sun_sensor_zp
-
-    @property
-    def SUN_SENSOR_ZM(self):
-        """SUN_SENSOR_ZM: Returns the sun sensor in the z- direction
-        :return: object or None
-        """
-        return self.__sun_sensor_zm
+        return self.__light_sensor_zp
 
     @property
     def RTC(self):

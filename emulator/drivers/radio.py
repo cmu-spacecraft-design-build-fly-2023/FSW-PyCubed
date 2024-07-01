@@ -4,7 +4,6 @@ import random
 
 
 class RadioDebug:
-
     def __init__(self, radio):
         self.radio = radio
         self.last_tx_packet = None

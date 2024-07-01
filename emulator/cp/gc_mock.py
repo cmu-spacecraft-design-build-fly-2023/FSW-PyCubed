@@ -5,7 +5,7 @@ def collect():
     """
     emulate gc.collect() by waiting a short time
     """
-    time.sleep(0.02)
+    time.sleep(0.001)
 
 
 def mem_free():

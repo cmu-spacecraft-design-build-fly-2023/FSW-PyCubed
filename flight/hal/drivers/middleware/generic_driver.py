@@ -9,6 +9,7 @@ class driver_cant_handle_exception(Exception):
     to be used when the handler attempts to handle a method that wasn't given to it
     as a handlable method
     """
+
     def __init__(self, exception: Exception):
         self.exception = exception
         super().__init__()

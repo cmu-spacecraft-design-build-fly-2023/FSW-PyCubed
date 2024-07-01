@@ -37,9 +37,9 @@ class TestDevice(Driver):
         super().__init__()
 
         self.handleable = {
-            'get_test_int': (self.int_checker, TestException),
-            'set_test_int': (lambda x, y: True, TestException),
-            'test_method': (lambda x, y: x, TestException)
+            "get_test_int": (self.int_checker, TestException),
+            "set_test_int": (lambda x, y: True, TestException),
+            "test_method": (lambda x, y: x, TestException),
         }
 
     def get_test_int(self) -> int:
@@ -60,7 +60,7 @@ class TestDevice(Driver):
         self.__test_str = input
 
     def int_checker(self, result, flags):
-        if 'hidden' in flags:
+        if "hidden" in flags:
             return False
         if result > 9:
             return False
@@ -76,13 +76,13 @@ class TestDevice(Driver):
     def get_flags(self):
         res = {}
         if self.flags & 0b100:
-            res['hidden'] = self.fixer
+            res["hidden"] = self.fixer
         if self.flags & 0b010:
             # fixable flag is raised
-            res['fixable'] = self.fixer
+            res["fixable"] = self.fixer
         if self.flags & 0b001:
             # critical flag is raised
-            res['critical'] = None
+            res["critical"] = None
         return res
 
     def fixer(self):

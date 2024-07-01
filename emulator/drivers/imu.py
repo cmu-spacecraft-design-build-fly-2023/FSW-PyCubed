@@ -1,4 +1,4 @@
-class IMU():
+class IMU:
     def __init__(self, accel, mag, gyro, temp) -> None:
         self.__accel = accel
         self.__mag = mag

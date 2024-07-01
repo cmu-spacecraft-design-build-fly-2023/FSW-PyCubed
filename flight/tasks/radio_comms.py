@@ -70,13 +70,9 @@ class Task(TemplateTask):
                 )
 
                 # Receive message, blocking for 1s
-                self.flag_ground_station_pass = (
-                    self.SAT_RADIO.receive_message()
-                )
+                self.flag_ground_station_pass = self.SAT_RADIO.receive_message()
 
                 if self.SAT_RADIO.image_done_transmitting():
-                    print(
-                        f"[{self.ID}][{self.name}] Image downlinked, deleting with OBDH"
-                    )
+                    print(f"[{self.ID}][{self.name}] Image downlinked, deleting with OBDH")
                     DH.notify_TM_path("img", tm_path)
                     DH.clean_up()

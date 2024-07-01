@@ -12,10 +12,7 @@ Author: Harry Rosmann
 
 """
 
-from hal.drivers.middleware.generic_driver import (
-    Driver,
-    driver_cant_handle_exception,
-)
+from hal.drivers.middleware.generic_driver import Driver, driver_cant_handle_exception
 from micropython import const
 
 # The default number of retries for the middleware

@@ -28,9 +28,7 @@ class StateManager:
     def scheduled_tasks(self):
         return self.__scheduled_tasks
 
-    def start(
-        self, start_state: str, SM_CONFIGURATION: dict, TASK_REGISTRY: dict
-    ):
+    def start(self, start_state: str, SM_CONFIGURATION: dict, TASK_REGISTRY: dict):
         """Starts the state machine
 
         Args:
@@ -67,9 +65,7 @@ class StateManager:
         if self.__initialized:
             # prevent illegal transitions
             if not (new_state in self.config[self.__current_state]["MovesTo"]):
-                raise ValueError(
-                    f"No transition from {self.__current_state} to {new_state}"
-                )
+                raise ValueError(f"No transition from {self.__current_state} to {new_state}")
         else:
             self.__initialized = True
 
@@ -99,9 +95,7 @@ class StateManager:
             priority = props["Priority"]
             task_fn = self.tasks[task_name]._run
 
-            self.__scheduled_tasks[task_name] = schedule(
-                frequency, task_fn, priority
-            )
+            self.__scheduled_tasks[task_name] = schedule(frequency, task_fn, priority)
 
     def stop_all_tasks(self):
         for name, task in self.__scheduled_tasks.items():

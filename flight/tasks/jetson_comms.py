@@ -31,9 +31,7 @@ class Task(TemplateTask):
         # Only communicate if SAT in NOMINAL state
         if SM.current_state == "NOMINAL":
             if not DH.data_process_exists("jetson"):
-                DH.register_data_process(
-                    "jetson", self.data_keys, "ffff", True, line_limit=40
-                )
+                DH.register_data_process("jetson", self.data_keys, "ffff", True, line_limit=40)
 
             # Register image process
             if not DH.data_process_exists("img"):
@@ -46,13 +44,9 @@ class Task(TemplateTask):
             # Wait for Jetson comms for 0.1s
             if not self.argus_comms.receive_message():
                 # No message received
-                print(
-                    f"[{self.ID}][{self.name}] No message received from Jetson"
-                )
+                print(f"[{self.ID}][{self.name}] No message received from Jetson")
 
             # Image received successfully
             else:
                 DH.image_completed()
-                print(
-                    f"[{self.ID}][{self.name}] Image successfully received from Jetson"
-                )
+                print(f"[{self.ID}][{self.name}] Image successfully received from Jetson")

@@ -279,19 +279,13 @@ GyroSensitivity2DegPerSec_values = [
 
 g_TO_METERS_PER_SECOND_SQUARED = 1 / 9.80665  # in m/s^2
 
-AccelSensitivity2Gravity = const(
-    16384
-)  # accelerometer sensitivity. See Section 1.2, Table 2
-GyroSensitivity2DegPerSec = (
-    131.2  # gyroscope sensitivity. See Section 1.2, Table 3
-)
+AccelSensitivity2Gravity = const(16384)  # accelerometer sensitivity. See Section 1.2, Table 2
+GyroSensitivity2DegPerSec = 131.2  # gyroscope sensitivity. See Section 1.2, Table 3
 
 
 class _ScaledReadOnlyStruct(Struct):
     def __init__(self, register_address, struct_format, scale):
-        super(_ScaledReadOnlyStruct, self).__init__(
-            register_address, struct_format
-        )
+        super(_ScaledReadOnlyStruct, self).__init__(register_address, struct_format)
         self.scale = scale
 
     # NOTE: I think super() may be an allocating operation.
@@ -322,16 +316,12 @@ class BMX160:
     # multiplicative constants
 
     # NOTE THESE FIRST TWO GET SET IN THE INIT SEQUENCE
-    ACC_SCALAR = 1 / (
-        AccelSensitivity2Gravity * g_TO_METERS_PER_SECOND_SQUARED
-    )  # 1 m/s^2 = 0.101971621 g
+    ACC_SCALAR = 1 / (AccelSensitivity2Gravity * g_TO_METERS_PER_SECOND_SQUARED)  # 1 m/s^2 = 0.101971621 g
     GYR_SCALAR = 1 / GyroSensitivity2DegPerSec_values[4]
     MAG_SCALAR = 1 / 16
     TEMP_SCALAR = 0.5**9
 
-    _accel = Struct(
-        BMX160_ACCEL_DATA_ADDR, "<hhh"
-    )  # this is the default scalar, but it should get reset anyhow in init
+    _accel = Struct(BMX160_ACCEL_DATA_ADDR, "<hhh")  # this is the default scalar, but it should get reset anyhow in init
     _gyro = Struct(BMX160_GYRO_DATA_ADDR, "<hhh")
     _mag = Struct(BMX160_MAG_DATA_ADDR, "<hhh")
     _temp = Struct(BMX160_TEMP_DATA_ADDR, "<h")
@@ -729,9 +719,7 @@ class BMX160_I2C(BMX160):
     def read_u8(self, address):
         with self.i2c_device as i2c:
             self._BUFFER[0] = address & 0xFF
-            i2c.write_then_readinto(
-                self._BUFFER, self._BUFFER, out_end=1, in_start=1, in_end=2
-            )
+            i2c.write_then_readinto(self._BUFFER, self._BUFFER, out_end=1, in_start=1, in_end=2)
         return self._BUFFER[1]
 
     def read_bytes(self, address, count, buf):
@@ -784,9 +772,7 @@ def find_nearest_valid(desired, possible_values):
     # If no such value exists (desired is lower than all possible), the line throws a StopIteration
     # Exception. In that case we return -1 as the index to use (i.e. the last/smallest value in the list)
     try:
-        return next(
-            filter(lambda x: (desired >= x[1]), enumerate(possible_values))
-        )[0]
+        return next(filter(lambda x: (desired >= x[1]), enumerate(possible_values)))[0]
     except Exception:
         return -1
 

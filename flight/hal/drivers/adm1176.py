@@ -108,9 +108,7 @@ class ADM1176(Driver):
         raw_voltage = ((_BUFFER[0] << 8) | (_BUFFER[2] & DATA_V_MASK)) >> 4
         raw_current = (_BUFFER[1] << 4) | (_BUFFER[2] & DATA_I_MASK)
         _voltage = (V_FULLSCALE / VI_RESOLUTION) * raw_voltage  # volts
-        _current = (
-            (I_FULLSCALE / VI_RESOLUTION) * raw_current
-        ) / self.sense_resistor  # amperes
+        _current = ((I_FULLSCALE / VI_RESOLUTION) * raw_current) / self.sense_resistor  # amperes
         return (_voltage, _current)
 
     def __turn_off(self) -> None:
@@ -203,21 +201,22 @@ class ADM1176(Driver):
     """
     ----------------------- HANDLER METHODS -----------------------
     """
+
     def get_flags(self):
         flags = {}
         status = self.status()
         if status & 0b1:
-            flags['ADC_OC'] = None
+            flags["ADC_OC"] = None
         if status & 0b10:
-            flags['ADC_ALERT'] = None
+            flags["ADC_ALERT"] = None
         if status & 0b100:
-            flags['HS_OC'] = None
+            flags["HS_OC"] = None
         if status & 0b1000:
-            flags['HS_ALERT'] = None
+            flags["HS_ALERT"] = None
         if status & 0b10000:
-            flags['OFF_STATUS'] = None
+            flags["OFF_STATUS"] = None
         if status & 0b100000:
-            flags['OFF_ALERT'] = None
+            flags["OFF_ALERT"] = None
         return flags
 
     ######################### DIAGNOSTICS #########################

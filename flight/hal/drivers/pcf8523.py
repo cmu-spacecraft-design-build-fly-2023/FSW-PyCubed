@@ -47,12 +47,7 @@ __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_PCF8523.git"
 
 from adafruit_bus_device.i2c_device import I2CDevice
-from adafruit_register import (
-    i2c_bcd_alarm,
-    i2c_bcd_datetime,
-    i2c_bit,
-    i2c_bits,
-)
+from adafruit_register import i2c_bcd_alarm, i2c_bcd_datetime, i2c_bit, i2c_bits
 from hal.drivers.diagnostics.diagnostics import Diagnostics
 from hal.drivers.middleware.generic_driver import Driver
 
@@ -135,9 +130,7 @@ class PCF8523(Driver):
 
     # The False means that day and weekday share a register. The 0 is that the
     # first day of the week is value 0 and not 1.
-    alarm = i2c_bcd_alarm.BCDAlarmTimeRegister(
-        0x0A, has_seconds=False, weekday_shared=False, weekday_start=0
-    )
+    alarm = i2c_bcd_alarm.BCDAlarmTimeRegister(0x0A, has_seconds=False, weekday_shared=False, weekday_start=0)
     """Alarm time for the first alarm."""
 
     alarm_interrupt = i2c_bit.RWBit(0x00, 1)
@@ -157,9 +150,7 @@ class PCF8523(Driver):
     True to offset every minute (1 LSB = 4.069ppm).  The default, False,
     consumes less power.  See datasheet figures 28-31 for details."""
 
-    calibration = i2c_bits.RWBits(  # pylint: disable=unexpected-keyword-arg
-        7, 0xE, 0, signed=True
-    )
+    calibration = i2c_bits.RWBits(7, 0xE, 0, signed=True)  # pylint: disable=unexpected-keyword-arg
     """Calibration offset to apply, from -64 to +63.  See the PCF8523 datasheet
     figure 18 for the offset calibration calculation workflow."""
 
@@ -192,12 +183,13 @@ class PCF8523(Driver):
     """
     ----------------------- HANDLER METHODS -----------------------
     """
+
     def get_flags(self):
         flags = {}
         if self.lost_power:
-            flags['lost_power'] = None
+            flags["lost_power"] = None
         if self.battery_low:
-            flags['battery_low'] = None
+            flags["battery_low"] = None
         return flags
 
     ######################### DIAGNOSTICS #########################

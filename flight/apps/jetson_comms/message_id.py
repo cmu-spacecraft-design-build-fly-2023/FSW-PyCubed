@@ -59,9 +59,7 @@ class Identifiers:
     REQUEST_AOD_LAST_ESTIMATE = 0x51
     REQUEST_ATTITUDE_ESTIMATE = 0x52
     REQUEST_ORBIT_ESTIMATE = 0x53
-    RESOLVE_STATE = (
-        0x54  # Payload simulate forward to current time (prediction)
-    )
+    RESOLVE_STATE = 0x54  # Payload simulate forward to current time (prediction)
 
     REQUEST_LAST_AOD_ESTIMATE_LOGS = 0x55
     RUN_ATTITUDE_AND_ORBIT_ESTIMATION = 0x56

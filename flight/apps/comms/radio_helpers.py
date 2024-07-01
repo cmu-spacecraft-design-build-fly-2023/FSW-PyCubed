@@ -79,9 +79,7 @@ class SATELLITE_RADIO:
             # Image present on satellite, get attributes from filepath
             image_stat = os.stat(self.image_strs[self.image_num])
             self.sat_images.image_size = int(image_stat[6])
-            self.sat_images.image_message_count = int(
-                self.sat_images.image_size / 196
-            )
+            self.sat_images.image_message_count = int(self.sat_images.image_size / 196)
 
             if (self.sat_images.image_size % 196) > 0:
                 self.sat_images.image_message_count += 1
@@ -182,9 +180,7 @@ class SATELLITE_RADIO:
 
             if self.ota_sequence_count == self.rx_message_sequence_count:
                 # Sequence count is synchronized on SAT and GS
-                self.ota_array.append(
-                    packet[6 : (6 + (self.rx_message_size - 2))]
-                )
+                self.ota_array.append(packet[6 : (6 + (self.rx_message_size - 2))])
                 self.ota_sequence_count += 1
                 self.ota_rec_success = 1
 
@@ -258,25 +254,14 @@ class SATELLITE_RADIO:
         while send_multiple:
             time.sleep(0.15)
             # Check if currently transmitting an image and CRC error has been 0
-            if (self.gs_req_message_ID == Definitions.SAT_IMG1_CMD) and (
-                self.crc_count == 0
-            ):
+            if (self.gs_req_message_ID == Definitions.SAT_IMG1_CMD) and (self.crc_count == 0):
                 target_sequence_count = self.sat_images.image_message_count
 
                 multiple_packet_count += 1
 
                 if (
-                    (
-                        (
-                            (self.gs_req_seq_count + multiple_packet_count)
-                            % self.send_mod
-                        )
-                        > 0
-                    )
-                    and (
-                        (self.gs_req_seq_count + multiple_packet_count)
-                        < (target_sequence_count - 1)
-                    )
+                    (((self.gs_req_seq_count + multiple_packet_count) % self.send_mod) > 0)
+                    and ((self.gs_req_seq_count + multiple_packet_count) < (target_sequence_count - 1))
                 ) or ((self.gs_req_seq_count + multiple_packet_count) == 0):
                     send_multiple = True
                     self.sat_req_ack = 0x0
@@ -290,9 +275,7 @@ class SATELLITE_RADIO:
             # If GS did not acknowledge within timeout / on boot, send heartbeat
             if (not self.heartbeat_sent) or (self.crc_count > 0):
                 # Transmit SAT heartbeat
-                tx_message = construct_message(
-                    self.heartbeat_seq[self.heartbeat_curr]
-                )
+                tx_message = construct_message(self.heartbeat_seq[self.heartbeat_curr])
 
                 if self.heartbeat_curr == (self.heartbeat_max - 1):
                     self.heartbeat_curr = 0
@@ -331,22 +314,12 @@ class SATELLITE_RADIO:
                 # Transmit image in multiple packets
                 # Header
                 tx_header = (
-                    (self.sat_req_ack | self.gs_req_message_ID).to_bytes(
-                        1, "big"
-                    )
-                    + (self.gs_req_seq_count + multiple_packet_count).to_bytes(
-                        2, "big"
-                    )
-                    + len(
-                        self.image_array[
-                            self.gs_req_seq_count + multiple_packet_count
-                        ]
-                    ).to_bytes(1, "big")
+                    (self.sat_req_ack | self.gs_req_message_ID).to_bytes(1, "big")
+                    + (self.gs_req_seq_count + multiple_packet_count).to_bytes(2, "big")
+                    + len(self.image_array[self.gs_req_seq_count + multiple_packet_count]).to_bytes(1, "big")
                 )
                 # Payload
-                tx_payload = self.image_array[
-                    self.gs_req_seq_count + multiple_packet_count
-                ]
+                tx_payload = self.image_array[self.gs_req_seq_count + multiple_packet_count]
                 # Pack entire message
                 tx_message = tx_header + tx_payload
 
@@ -360,9 +333,7 @@ class SATELLITE_RADIO:
                         0x3,
                     ]
                 )
-                tx_payload = self.ota_rec_success.to_bytes(
-                    1, "big"
-                ) + self.ota_sequence_count.to_bytes(2, "big")
+                tx_payload = self.ota_rec_success.to_bytes(1, "big") + self.ota_sequence_count.to_bytes(2, "big")
                 tx_message = tx_header + tx_payload
 
             else:
